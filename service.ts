@@ -11,7 +11,7 @@ export class Service {
     }
 
     async create(collegue: Collegue) {
-        const response = await fetch('https://c1.cleverapps.io/collegues', {
+        const response = await fetch('https://c1.cleverapps.io/collegues/', {
             method: 'post',
             body: JSON.stringify(collegue),
             headers: {'Content-Type': 'application/json'}
@@ -20,16 +20,16 @@ export class Service {
     }
 
     async getById(id: string) {
-        const response = await fetch('https://c1.cleverapps.io/collegues' + id);
+        const response = await fetch('https://c1.cleverapps.io/collegues/' + id);
         return response.json();
     }
 
-    async update(collegue: Collegue, image: string, id: string) {
-        const response = await fetch('https://httpbin.org/post' + id, {
-            method: 'post',
+    async update(collegue: Collegue, id: string) {
+        const response = await fetch('https://c1.cleverapps.io/collegues/' + id, {
+            method: 'patch',
             body: JSON.stringify(collegue),
             headers: {'Content-Type': 'application/json'}
         });
-        const data = await response.json();
+        return await response.json();
     }
 }

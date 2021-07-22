@@ -5,7 +5,6 @@ const readline = require('readline');
 
 export class Presentation {
     public collegues: Collegue[] = [];
-    public collegue: Promise<Collegue>;
 
     constructor(
         private service: Service
@@ -60,17 +59,28 @@ export class Presentation {
 
                     break;
                 case "3":
-                    rl.question("Enter l'id de votre collegue  : ", (id: string) => {
+                    rl.question("Enter l'id de votre collegue  : ", (idTer: string) => {
                         rl.question('Enter la nouvelle image : ', async (image: string) => {
-                            this.collegue = await this.service.getById(id)
-                            this.service.update(this.collegue).then(r => r);
+                            const collegue = await this.service.getById(idTer)
+                            const collegueUpdated: Collegue = {
+                                id: collegue.id,
+                                nom: collegue.nom,
+                                prenom: collegue.prenom,
+                                societe: collegue.societe,
+                                email: collegue.email,
+                                dateNaissance: collegue.dateNaissance,
+                                sexe: collegue.sexe,
+                                adresse: collegue.adresse,
+                                password: collegue.password,
+                                photo: image,
+                                departement: collegue.departement,
+                            };
+                            await this.service.update(collegueUpdated, idTer);
                             console.log("La nouvelle image est update")
                             rl.close();
                             this.demarrer()
-                            rl.close();
                         });
                     });
-                    // this.collegue = this.service.getById("idRDRDRD").then(collegue => console.log(collegue))
                     break;
                 case "99":
                     console.log("Au revoir !")
