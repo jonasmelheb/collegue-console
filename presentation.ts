@@ -5,7 +5,7 @@ const readline = require('readline');
 
 export class Presentation {
     public collegues: Collegue[] = [];
-    public collegue: Collegue;
+    public collegue: Promise<Collegue>;
 
     constructor(
         private service: Service
@@ -35,26 +35,42 @@ export class Presentation {
                     })
                     break;
                 case "2":
-                    const collegue: Collegue = {
-                        id: "idRDRDRD",
-                        nom: "Jean",
-                        prenom: "Mich Mich2",
-                        societe: "societe",
-                        email: "email@email.com",
-                        dateNaissance: "1980-03-13T05:22:33 -01:00",
-                        sexe: "homme",
-                        adresse: "adresse",
-                        password: "password",
-                        photo: "photo",
-                        departement: "34",
-                    };
-                    this.service.create(collegue).then(r => r);
-                    console.log("Un nouveau collegue creer avec succes")
-                    rl.close();
-                    this.demarrer()
+                    rl.question('Enter votre nom : ', (nom: string) => {
+                        rl.question('Enter votre prénom : ', (prenom: string) => {
+                            const collegue: Collegue = {
+                                id: "id" + nom + prenom,
+                                nom: nom,
+                                prenom: prenom,
+                                societe: "societe",
+                                email: "email@email.com",
+                                dateNaissance: "1980-03-13T05:22:33 -01:00",
+                                sexe: "homme",
+                                adresse: "adresse",
+                                password: "password",
+                                photo: "photo",
+                                departement: "34",
+                            };
+                            this.service.create(collegue).then(r => r);
+                            console.log("Un nouveau collegue creer avec succes")
+                            rl.close();
+                            this.demarrer()
+                            rl.close();
+                        });
+                    });
+
                     break;
                 case "3":
-                    this.service.getById("idRDRDRD").then(collegue => console.log(collegue))
+                    rl.question("Enter l'id de votre collegue  : ", (id: string) => {
+                        rl.question('Enter la nouvelle image : ', async (image: string) => {
+                            this.collegue = await this.service.getById(id)
+                            this.service.update(this.collegue).then(r => r);
+                            console.log("La nouvelle image est update")
+                            rl.close();
+                            this.demarrer()
+                            rl.close();
+                        });
+                    });
+                    // this.collegue = this.service.getById("idRDRDRD").then(collegue => console.log(collegue))
                     break;
                 case "99":
                     console.log("Au revoir !")
